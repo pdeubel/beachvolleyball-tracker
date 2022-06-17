@@ -1,5 +1,13 @@
 doc/
 
+# Flask
+
+migrations/
+
+# Python
+
+__pycache__/
+
 # PyCharm
 .idea
 

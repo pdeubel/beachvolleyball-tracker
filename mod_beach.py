@@ -6,7 +6,8 @@ from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 
 
-def setup_app():
+
+def create_app():
     app = Flask(__name__)
 
     secret_key = os.getenv("SECRET_KEY")
@@ -20,8 +21,8 @@ def setup_app():
 
     # Postgres on Heroku sets DATABASE_URL to the correct address, alternatively use a local test setup
     default_database_path = "postgresql://postgres:12345678@localhost:5432/local_db"
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL", default_database_path)
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL", default_database_path)
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
     # Setup of the mail server settings
 
@@ -31,11 +32,21 @@ def setup_app():
     app.config["MAIL_USERNAME"] = os.getenv("MAILGUN_SMTP_LOGIN", "mailuser@localhost")
     app.config["MAIL_PASSWORD"] = os.getenv("MAILGUN_SMTP_PASSWORD", "123456")
 
+    from backend.database_schema import db
+
+    db.init_app(app)
+    migrate = Migrate(app, db)
+
+    from routes.login import login_page
+
+    app.register_blueprint(login_page)
+
     return app
 
 
 def main():
-    app = setup_app()
+
+    app = create_app()
 
     """
     db = SQLAlchemy(app)
@@ -44,6 +55,10 @@ def main():
     mail = Mail()
     mail.init_app(app)
     """
+
+
+    # db = SQLAlchemy(app)
+    # migrate = Migrate(app, db)
 
     app.run()
 

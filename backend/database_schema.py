@@ -12,6 +12,8 @@ class Player(db.Model, UserMixin):
     player_id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(254), unique=True, nullable=False)
     player_name = db.Column(db.String(80), nullable=True)  # Filled in by the user
+    pin_code = db.Column(db.String(200), nullable=True)  # Use hashed 6-Digit Pin for the login
+    pin_code_timestamp = db.Column(db.DateTime, nullable=True)  # Timestamp to check if PIN is still valid
 
     def __repr__(self):
         if repr(self.player_name) is None:

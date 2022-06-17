@@ -1,0 +1,36 @@
+{% extends "index.html" %}
+{% block body %}
+
+<form method="POST" action="/pin">
+    {{ form.csrf_token }}
+    <div class="container">
+
+        <div class="row justify-content-center">
+
+            <div class="col-auto">
+                <h1>Pin Code</h1>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <p>E-Mail:</p> {{ email }}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                {{ form.pin.label }} {{ form.pin(size=6) }}
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-auto">
+                <button type=submit class="btn btn-primary">Submit</button>
+                {{ form.submit }}
+            </div>
+        </div>
+    </div>
+</form>
+
+{% endblock %}
