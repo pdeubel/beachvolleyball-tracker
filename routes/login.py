@@ -9,7 +9,7 @@ from flask_wtf import FlaskForm
 from werkzeug.security import generate_password_hash, check_password_hash
 from wtforms import EmailField, validators, StringField, HiddenField
 
-from backend.database_schema import db, Player
+from backend.database_schema import db, Player, EmailWhitelist
 from backend.mail import send_pin_code
 
 login_page = Blueprint("login", __name__)
@@ -45,17 +45,18 @@ def login():
 
         player: Player = Player.query.filter_by(email=email).first()
 
+        whitelist_approved = EmailWhitelist.query.filter_by(email=email).first()
+
+        if whitelist_approved is None:
+            flash("Diese E-Mail ist nicht freigeschaltet, bitte an Patrick wenden!")
+            return redirect(request.url)
+
         if player is None:
-            # TODO whitelist
-            """
-            1. Check Whitelist
-            2. Not in whitelist
-                - Error message
-            3. In Whitelist
-                - Create Player object in database
-                - Then continue below with sending pin code
-            """
-            pass
+            player = Player(
+                email=email
+            )
+            db.session.add(player)
+            db.session.commit()
 
         pin_code = str(randint(100000, 999999))
 

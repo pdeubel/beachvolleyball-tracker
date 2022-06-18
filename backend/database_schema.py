@@ -49,3 +49,11 @@ class GamesAndPlayers(db.Model):
     game_id = db.Column(db.Integer, db.ForeignKey("game.game_id"), nullable=False)
     player_id = db.Column(db.Integer, db.ForeignKey("player.player_id"), nullable=False)
     team = db.Column(db.Boolean, nullable=False)
+
+
+class EmailWhitelist(db.Model):
+
+    __tablename__ = "email_whitelist"
+
+    email_id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(254), unique=True, nullable=False)
