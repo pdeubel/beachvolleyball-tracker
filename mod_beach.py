@@ -60,7 +60,7 @@ def main():
     # db = SQLAlchemy(app)
     # migrate = Migrate(app, db)
 
-    app.run()
+    app.run(debug=True)
 
 
 if __name__ == "__main__":

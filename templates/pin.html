@@ -1,7 +1,9 @@
 {% extends "index.html" %}
 {% block body %}
 
-<form method="POST" action="/pin">
+{% include 'alert_flash_messages.html' %}
+
+<form method="POST" action="/{{ pin_confirmation_url_part }}">
     {{ form.csrf_token }}
     <div class="container">
 
@@ -12,19 +14,19 @@
             </div>
         </div>
 
-        <div class="row">
-            <div class="col">
-                <p>E-Mail:</p> {{ email }}
+        <div class="row mt-4 justify-content-center">
+            <div class="col-auto">
+                E-Mail: {{ form.email.data }}
             </div>
         </div>
 
-        <div class="row">
-            <div class="col">
+        <div class="row mt-4 justify-content-center">
+            <div class="col-auto">
                 {{ form.pin.label }} {{ form.pin(size=6) }}
             </div>
         </div>
 
-        <div class="row justify-content-center">
+        <div class="row mt-4 justify-content-center">
             <div class="col-auto">
                 <button type=submit class="btn btn-primary">Submit</button>
                 {{ form.submit }}
