@@ -4,6 +4,7 @@ from random import randint, choice
 from string import ascii_uppercase, ascii_lowercase, digits
 
 from flask import Blueprint, render_template, redirect, url_for, flash, request
+from flask_login import login_user, LoginManager
 from flask_wtf import FlaskForm
 from werkzeug.security import generate_password_hash, check_password_hash
 from wtforms import EmailField, validators, StringField, HiddenField
@@ -12,7 +13,9 @@ from backend.database_schema import db, Player
 from backend.mail import send_pin_code
 
 login_page = Blueprint("login", __name__)
-valid_pin_code_timedelta = timedelta(minutes=1)
+valid_pin_code_timedelta = timedelta(minutes=15)
+
+login_manager = LoginManager()
 
 
 class LoginForm(FlaskForm):
@@ -28,6 +31,11 @@ def generate_pin_confirmation_url_part():
     return "".join(choice(ascii_uppercase + ascii_lowercase + digits) for _ in range(24))
 
 
+@login_manager.user_loader
+def load_player(player_id):
+    return Player.query.filter_by(player_id=player_id).first()
+
+
 @login_page.route("/", methods=["GET", "POST"])
 def login():
     form = LoginForm()
@@ -38,6 +46,7 @@ def login():
         player: Player = Player.query.filter_by(email=email).first()
 
         if player is None:
+            # TODO whitelist
             """
             1. Check Whitelist
             2. Not in whitelist
@@ -72,12 +81,6 @@ def login():
 
 @login_page.route("/<pin_confirmation_url_part>", methods=["GET", "POST"])
 def validate_pin(pin_confirmation_url_part: str):
-
-    # if user is not None and check_password_hash(user.password, password):
-    #     login_user(user)
-    #
-    #     flask.flash("Logged in")
-
     valid_player: Player = Player.query.filter_by(pin_confirmation_url_part=pin_confirmation_url_part).first()
 
     if valid_player is None:
@@ -94,7 +97,6 @@ def validate_pin(pin_confirmation_url_part: str):
         pin_code_time_valid = (current_time - valid_player.pin_code_timestamp) < valid_pin_code_timedelta
 
         if not pin_code_time_valid:
-            # TODO check if flash message works
             flash("Der Pin Code ist abgelaufen, bitte erneut einloggen!")
             return redirect(url_for("login.login"))
 
@@ -103,18 +105,12 @@ def validate_pin(pin_confirmation_url_part: str):
 
         if not pin_valid:
             flash("Der Pin Code ist falsch, bitte erneut versuchen!")
+            # Reload page
             return redirect(request.url)
 
-
-        """
-        1. Compare pin from form with hashed pin from database + Check timestamp 15 min
-        3. Pin is not equal
-            - Error message: Try again
-        2. Timestamp > 15min
-            - Error message: Pin Code expired, log in again
-            - Redirect login page
-        4. Pin equal + timestamp <= 15 min
-            - Login
-        """
+        # remember=True keeps player logged in, by default the REMEMBER_COOKIE_DURATION is set to 365 days which should
+        # be enough
+        login_user(valid_player, remember=True)
+        return redirect(url_for("player.player_site"))
 
     return render_template("pin.html", form=form, pin_confirmation_url_part=pin_confirmation_url_part)

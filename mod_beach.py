@@ -1,13 +1,13 @@
 import os
 
 from flask import Flask
-from flask_mailman import Mail
-from flask_migrate import Migrate
-from flask_sqlalchemy import SQLAlchemy
-
 
 
 def create_app():
+    from backend.database_schema import db, migrate
+    from routes.login import login_page, login_manager
+    from routes.player import player_page
+
     app = Flask(__name__)
 
     secret_key = os.getenv("SECRET_KEY")
@@ -32,14 +32,16 @@ def create_app():
     app.config["MAIL_USERNAME"] = os.getenv("MAILGUN_SMTP_LOGIN", "mailuser@localhost")
     app.config["MAIL_PASSWORD"] = os.getenv("MAILGUN_SMTP_PASSWORD", "123456")
 
-    from backend.database_schema import db
-
+    # Database app initialization
     db.init_app(app)
-    migrate = Migrate(app, db)
+    migrate.init_app(app, db)
 
-    from routes.login import login_page
+    # Flask Login app initialization
+    login_manager.init_app(app)
 
+    # Register Blueprints
     app.register_blueprint(login_page)
+    app.register_blueprint(player_page)
 
     return app
 

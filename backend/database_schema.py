@@ -1,8 +1,10 @@
 from flask_login import UserMixin
+from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 
 
 db = SQLAlchemy()
+migrate = Migrate()
 
 
 class Player(db.Model, UserMixin):
