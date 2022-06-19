@@ -4,7 +4,7 @@ from random import randint, choice
 from string import ascii_uppercase, ascii_lowercase, digits
 
 from flask import Blueprint, render_template, redirect, url_for, flash, request
-from flask_login import login_user, LoginManager
+from flask_login import login_user, LoginManager, current_user
 from flask_wtf import FlaskForm
 from werkzeug.security import generate_password_hash, check_password_hash
 from wtforms import EmailField, validators, StringField, HiddenField
@@ -38,6 +38,9 @@ def load_player(player_id):
 
 @login_page.route("/", methods=["GET", "POST"])
 def login():
+    if current_user.is_authenticated:
+        return redirect(url_for("player.player_site"))
+
     form = LoginForm()
 
     if form.validate_on_submit():

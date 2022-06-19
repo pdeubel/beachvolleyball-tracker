@@ -5,6 +5,7 @@ from flask import Flask
 
 def create_app():
     from backend.database_schema import db, migrate
+    from backend.mail import mail
     from routes.login import login_page, login_manager
     from routes.player import player_page
 
@@ -29,8 +30,8 @@ def create_app():
     # Use the Mailgun add-on from heroku, which like Postgres works with environment variables
     app.config["MAIL_SERVER"] = os.getenv("MAILGUN_SMTP_SERVER", "localhost")
     app.config["MAIL_PORT"] = os.getenv("MAILGUN_SMTP_PORT", "25")
-    app.config["MAIL_USERNAME"] = os.getenv("MAILGUN_SMTP_LOGIN", "mailuser@localhost")
-    app.config["MAIL_PASSWORD"] = os.getenv("MAILGUN_SMTP_PASSWORD", "123456")
+    app.config["MAIL_USERNAME"] = os.getenv("MAILGUN_SMTP_LOGIN", "admin@testdomain")
+    app.config["MAIL_PASSWORD"] = os.getenv("MAILGUN_SMTP_PASSWORD", "12345")
 
     # Database app initialization
     db.init_app(app)
@@ -38,6 +39,9 @@ def create_app():
 
     # Flask Login app initialization
     login_manager.init_app(app)
+
+    # Initialize Flask-Mailman to send mails
+    mail.init_app(app)
 
     # Register Blueprints
     app.register_blueprint(login_page)
