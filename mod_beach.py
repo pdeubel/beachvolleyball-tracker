@@ -27,11 +27,18 @@ def create_app():
 
     # Setup of the mail server settings
 
+    mail_username = os.getenv("MAIL_USERNAME")
+    mail_password = os.getenv("MAIL_PASSWORD")
+
+    if mail_username is None or mail_password is None:
+        raise RuntimeError("'MAIL_USERNAME' or 'MAIL_PASSWORD' is not set which is required so that the PIN code "
+                           "emails can be sent.")
+
     # Use the Mailgun add-on from heroku, which like Postgres works with environment variables
     app.config["MAIL_SERVER"] = os.getenv("MAILGUN_SMTP_SERVER", "localhost")
     app.config["MAIL_PORT"] = os.getenv("MAILGUN_SMTP_PORT", "25")
-    app.config["MAIL_USERNAME"] = os.getenv("MAILGUN_SMTP_LOGIN", "admin@testdomain")
-    app.config["MAIL_PASSWORD"] = os.getenv("MAILGUN_SMTP_PASSWORD", "12345")
+    app.config["MAIL_USERNAME"] = os.getenv("MAILGUN_SMTP_LOGIN", mail_username)
+    app.config["MAIL_PASSWORD"] = os.getenv("MAILGUN_SMTP_PASSWORD", mail_password)
 
     # Database app initialization
     db.init_app(app)
