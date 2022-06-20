@@ -1,6 +1,52 @@
 {% extends "index.html" %}
 {% block body %}
 
-<h1>Logged in successfully!</h1>
+{% if form %}
+    <form method="POST" action="/player">
+    {{ form.csrf_token }}
+    <div class="container">
+
+        <div class="row justify-content-center">
+
+            <div class="col-auto">
+                <h1>Bitte einen Benutzernamen angeben</h1>
+            </div>
+        </div>
+
+        <div class="row mt-4 justify-content-center">
+            <div class="col-auto">
+                {{ form.player_name.label }} {{ form.player_name(size=20) }}
+            </div>
+        </div>
+
+        <div class="row mt-4 justify-content-center">
+            <div class="col-auto">
+                <button type=submit class="btn btn-primary">Bestätigen</button>
+                {{ form.submit }}
+            </div>
+        </div>
+    </div>
+    </form>
+{% else %}
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-auto">
+                <h1>Spieler: <i>{{ player_name }}</i></h1>
+            </div>
+        </div>
+
+        <div class="row mt-4 justify-content-center">
+            <div class="col-auto">
+                <img src="data:image/jpeg;base64,{{ player_qr_code_b64 }}"/>
+            </div>
+        </div>
+
+        <div class="row mt-4 justify-content-center">
+            <div class="col-auto">
+                <button type=submit class="btn btn-primary">Spiel starten</button>
+            </div>
+        </div>
+    </div>
+{% endif %}
 
 {% endblock %}
