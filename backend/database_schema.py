@@ -32,7 +32,7 @@ class Game(db.Model):
     __tablename__ = "game"
 
     game_id = db.Column(db.Integer, primary_key=True)
-    team_0_won = db.Column(db.Boolean, nullable=False)
+    team_0_won = db.Column(db.Boolean, nullable=True)
 
     def __repr__(self):
         return f"<Game #{repr(self.game_id)} -- Team {1 if self.team_0_won else 2} won>"

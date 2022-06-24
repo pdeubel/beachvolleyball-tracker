@@ -43,9 +43,9 @@ def player_site():
         return render_template("player_site.html", form=form)
 
     qr = qrcode.QRCode(
-        version=8,
-        box_size=4,
-        border=4
+        version=None,  # fit=True below sets this automatically
+        box_size=8,  # How many pixels each box of the QR code is
+        border=4  # Per QR specification
     )
 
     to_encode = {
@@ -54,9 +54,8 @@ def player_site():
     }
 
     qr.add_data(b64encode(json.dumps(to_encode).encode("ascii")))
-    qr.make(fit=True)
 
-    image_io = convert_pil_image_to_bytes(qr.make_image(fill_color="black", back_color="white"))
+    image_io = convert_pil_image_to_bytes(qr.make_image(fit=True, fill_color="black", back_color="white"))
     player_qr_code_b64 = b64encode(image_io.getvalue()).decode("ascii")
 
     return render_template("player_site.html", player_name=player_name, player_qr_code_b64=player_qr_code_b64)

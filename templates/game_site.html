@@ -1,0 +1,49 @@
+{% extends "index.html" %}
+{% block body %}
+
+<script src="https://unpkg.com/html5-qrcode@2.2.1/html5-qrcode.min.js"></script>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col w-75" id="qr-reader"></div>
+    </div>
+    <div class="row mt-4 justify-content-center">
+        <div class="col-auto">
+            <div class="container" id="add-data-here">
+                <span class="badge bg-primary me-2" id="current_player">{{ current_player_name }}</span>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-4 justify-content-center">
+        <div class="col-auto" id="button-div">
+            <button type="button" class="btn btn-success" id="btn-select-teams">Teams auswählen</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="confirmTeamModal" tabindex="-1" aria-labelledby="confirmTeamModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmTeamModalLabel">Teams korrekt?</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Sind die Teams korrekt?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Abbrechen</button>
+                <button type="button" class="btn btn-primary" id="btn-confirm-teams">Spiel starten</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Store current player's id in a variable to add it to the list of scanned players
+    let current_player_id = parseInt("{{ current_player_id }}");
+    let current_player_name = "{{ current_player_name }}";
+</script>
+<script src="{{ url_for('static', filename='js/qr_code_scanner.js') }}"></script>
+
+{% endblock %}

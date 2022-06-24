@@ -2,6 +2,8 @@ import os
 
 from flask import Flask
 
+from routes.game import game_page
+
 
 def create_app():
     from backend.database_schema import db, migrate
@@ -53,6 +55,7 @@ def create_app():
     # Register Blueprints
     app.register_blueprint(login_page)
     app.register_blueprint(player_page)
+    app.register_blueprint(game_page)
 
     return app
 
