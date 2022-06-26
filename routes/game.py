@@ -1,30 +1,85 @@
 import binascii
 import json
+import os
+import time
 from base64 import b64decode
 from math import ceil
 
 import sqlalchemy.exc
-from flask import Blueprint, render_template, request, jsonify, url_for, redirect
+from flask import Blueprint, render_template, request, jsonify, url_for, redirect, session
 from flask_login import login_required, current_user
 
 from backend.database_schema import Player, Game, db, GamesAndPlayers
 
 game_page = Blueprint("game", __name__)
 
+beach_location_latitude = os.getenv("BEACH_LOC_LATITUDE")
+beach_location_longitude = os.getenv("BEACH_LOC_LONGITUDE")
+allowed_distance_in_meter = os.getenv("ALLOWED_DISTANCE_METER")
+
 
 @game_page.route("/game", methods=["GET", "POST"])
 @login_required
 def game_site():
-    return render_template(
-        "game_site.html",
-        current_player_id=current_user.player_id,
-        current_player_name=current_user.player_name
-    )
+    if request.method == "GET":
+        try:
+            location_in_radius = session["location_in_radius"]
+            location_in_radius_timestamp = session["location_in_radius_timestamp"]
+        except KeyError:
+            return render_template("error_geolocation.html")
+        else:
+            # Was the timestamp longer than 15 minutes (900s) ago?
+            timed_out = (time.time() - location_in_radius_timestamp) > 900
+
+            if timed_out:
+                return render_template(
+                    "check_geolocation.html",
+                    beach_location_latitude=beach_location_latitude,
+                    beach_location_longitude=beach_location_longitude,
+                    allowed_distance_in_meter=allowed_distance_in_meter
+                )
+
+            if location_in_radius:
+                return render_template(
+                    "game_site.html",
+                    current_player_id=current_user.player_id,
+                    current_player_name=current_user.player_name
+                )
+            else:
+                return render_template("error_geolocation.html")
+    else:
+        try:
+            location_in_radius = request.form["location_in_radius"]
+        except KeyError:
+            return render_template(
+                "check_geolocation.html",
+                beach_location_latitude=beach_location_latitude,
+                beach_location_longitude=beach_location_longitude,
+                allowed_distance_in_meter=allowed_distance_in_meter
+            )
+        else:
+            session["location_in_radius_timestamp"] = time.time()
+
+            if location_in_radius == "true":
+                session["location_in_radius"] = True
+                return render_template(
+                    "game_site.html",
+                    current_player_id=current_user.player_id,
+                    current_player_name=current_user.player_name
+                )
+            else:
+                session["location_in_radius"] = False
+                return render_template("error_geolocation.html")
 
 
 @game_page.route("/game/<game_id>", methods=["GET"])
 @login_required
 def show_game_with_id(game_id: int):
+    is_user_allowed = GamesAndPlayers.query.filter_by(game_id=game_id, player_id=current_user.player_id).first()
+
+    if is_user_allowed is None:
+        return redirect(url_for("player.player_site"))
+
     return render_template("select_teams.html", game_id=game_id)
 
 

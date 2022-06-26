@@ -1,0 +1,11 @@
+{% extends "index.html" %}
+{% block body %}
+<script>
+    let beach_location_latitude = parseFloat("{{ beach_location_latitude }}");
+    let beach_location_longitude = parseFloat("{{ beach_location_longitude }}");
+    let allowed_distance_in_meter = parseInt("{{ allowed_distance_in_meter }}");
+</script>
+
+<script src="{{ url_for('static', filename='js/check_geolocation.js') }}"></script>
+
+{% endblock %}
