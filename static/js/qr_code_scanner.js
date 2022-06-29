@@ -125,7 +125,6 @@ function confirmTest () {
         "headers": {'Content-Type': 'application/json'},
         "body": JSON.stringify(Object.fromEntries(player_team_map))  // JSON.stringify nulls js Map, so use fromEntries
     }).then(res => {
-        console.log("Request completed! Response: ", res);
         window.location.href = res.url;
     });
 }

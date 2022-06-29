@@ -3,6 +3,7 @@ import json
 import os
 import time
 from base64 import b64decode
+from datetime import datetime
 from math import ceil
 
 import sqlalchemy.exc
@@ -75,12 +76,22 @@ def game_site():
 @game_page.route("/game/<game_id>", methods=["GET"])
 @login_required
 def show_game_with_id(game_id: int):
-    is_user_allowed = GamesAndPlayers.query.filter_by(game_id=game_id, player_id=current_user.player_id).first()
+    game = Game.query.filter_by(game_id=game_id).first()
 
-    if is_user_allowed is None:
+    # Only the creator has access to the game page and only if no result has been added
+    if (game is None
+            or game.game_created_by != current_user.player_id
+            or game.win_result_submitted_timestamp is not None
+            or game.team_1_won is not None):
         return redirect(url_for("player.player_site"))
 
-    return render_template("select_teams.html", game_id=game_id)
+    players = Player.query.join(GamesAndPlayers).filter_by(game_id=game_id)
+    # Team set to False (or as integer '0') resembles Team 1
+    first_team_player_names = [p.player_name for p in players.filter_by(team=False).all()]
+    second_team_player_names = [p.player_name for p in players.filter_by(team=True).all()]
+
+    return render_template("select_winner_team.html", game_id=game_id, first_team_player_names=first_team_player_names,
+                           second_team_player_names=second_team_player_names)
 
 
 @game_page.route("/game/player-lookup", methods=["POST"])
@@ -125,8 +136,6 @@ def select_teams():
         except json.decoder.JSONDecodeError or KeyError:
             return "Invalid data", 400
 
-        print(f"Players: {players} type {type(players)}")
-
         index_to_separate_teams = ceil(len(players) / 2)
 
         return jsonify({"team_1": players[:index_to_separate_teams], "team_2": players[index_to_separate_teams:]})
@@ -140,7 +149,10 @@ def create_game():
     except json.decoder.JSONDecodeError:
         return "Invalid data", 400
 
-    game = Game()
+    game = Game(
+        game_created_by=current_user.player_id,
+        game_created_timestamp=datetime.fromtimestamp(time.time())
+    )
     db.session.add(game)
     db.session.commit()
 
@@ -155,3 +167,19 @@ def create_game():
     db.session.commit()
 
     return redirect(url_for("game.show_game_with_id", game_id=game.game_id))
+
+
+@game_page.route("/game/register-winner", methods=["POST"])
+@login_required
+def register_game_winner():
+    game_id = int(request.form["game_id"])
+    winner_team = request.form["winner_team"]
+
+    game = Game.query.filter_by(game_id=game_id).first()
+
+    if game.team_1_won is None:
+        game.team_1_won = bool(winner_team)
+        game.win_result_submitted_timestamp = datetime.fromtimestamp(time.time())
+        db.session.commit()
+
+    return ("Success", 201)

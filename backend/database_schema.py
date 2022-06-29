@@ -32,10 +32,13 @@ class Game(db.Model):
     __tablename__ = "game"
 
     game_id = db.Column(db.Integer, primary_key=True)
-    team_0_won = db.Column(db.Boolean, nullable=True)
+    game_created_by = db.Column(db.Integer, db.ForeignKey("player.player_id"), nullable=False)
+    game_created_timestamp = db.Column(db.DateTime, nullable=False)
+    team_1_won = db.Column(db.Boolean, nullable=True)
+    win_result_submitted_timestamp = db.Column(db.DateTime, nullable=True)
 
     def __repr__(self):
-        return f"<Game #{repr(self.game_id)} -- Team {1 if self.team_0_won else 2} won>"
+        return f"<Game #{repr(self.game_id)} -- Team {2 if self.team_1_won else 1} won>"
 
     def get_id(self):
         return str(self.game_id)

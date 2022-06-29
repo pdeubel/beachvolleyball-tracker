@@ -1,0 +1,91 @@
+{% extends "index.html" %}
+{% block body %}
+
+<script>
+    let game_id = "{{ game_id }}"
+</script>
+
+<!--Modal to confirm the winner team selection-->
+<div class="modal fade" id="confirmWinnerTeamModal" tabindex="-1" aria-labelledby="confirmWinnerTeamModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmWinnerTeamModalLabel">Gewinnerteam wirklich festlegen?</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Schließen"></button>
+            </div>
+            <div class="modal-body">
+                Hat <strong><span id="winner-team-confirm-label-id"></span></strong> gewonnen?<br/><br/>
+                <div class="collapse" id="winner-team-confirm-list-first-team-id">
+                    ({{ first_team_player_names | join(", ") }})
+                </div>
+                <div class="collapse" id="winner-team-confirm-list-second-team-id">
+                    ({{ second_team_player_names | join(", ") }})
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Abbrechen</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
+                        id="confirm-winner-team-btn">
+                    Bestätigen
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container" id="select-winner-content-div">
+    <div class="row mt-4 justify-content-center">
+        <div class="col-auto">
+            <h1>Welches Team hat gewonnen?</h1>
+        </div>
+    </div>
+    <div class="row mt-4 justify-content-center">
+        <div class="col-auto">
+            <div class="btn-group" role="group" aria-label="Team Buttons" id="winner-team-btn-group">
+                <button type="button" class="btn btn-outline-success w-50" id="winner-team-first">
+                    <strong>Team 1</strong><br/>
+                    ({{ first_team_player_names | join(", ") }})
+                </button>
+                <button type="button" class="btn btn-outline-danger w-50" id="winner-team-second">
+                    <strong>Team 2</strong><br/>
+                    ({{ second_team_player_names | join(", ") }})
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-4 justify-content-center">
+        <div class="col-auto" id="button-div">
+            <button type=submit class="btn btn-primary" id="set-game-winner-btn">Gewinner festlegen</button>
+        </div>
+    </div>
+
+    <div class="row mt-4 justify-content-center collapse" id="select-winner-team-alert-id">
+        <div class="col-auto alert alert-warning">
+            Bitte ein Gewinnerteam antippen
+        </div>
+    </div>
+</div>
+
+
+<div class="container collapse" id="confirm-submitted-winner-div">
+    <div class="row mt-4 justify-content-center">
+        <div class="col-auto">
+            <h3>Sieg von <strong>Team <span id="confirm-submitted-winner-label"></span></strong>
+                erfolgreich eingetragen!</h3>
+        </div>
+    </div>
+    <div class="row mt-4 justify-content-center">
+        <div class="col-auto">
+            <form method="POST" action="/player">
+                <button type=submit class="btn btn-primary">Zurück zur Spielerseite</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/register_winner_team.js') }}"></script>
+
+
+{% endblock %}
