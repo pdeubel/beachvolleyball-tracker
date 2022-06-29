@@ -54,9 +54,16 @@ function selectTeamsCallback() {
         return response.json();
     }).then(responseJSON => {
         // Remove select teams button as it is no longer needed
-
         const btn = document.getElementById("btn-select-teams");
         btn.remove();
+
+        // Remove QR code scanner as it is no longer needed
+        let qr_reader_row = document.getElementById("qr-reader-row");
+        qr_reader_row.remove();
+
+        // Inform player how to change teams
+        let player_info_label = document.getElementById("player-information-label");
+        player_info_label.innerText = "Spielernamen antippen um das Team zu wechseln (rot/grün):";
 
         let team_1_ids = responseJSON["team_1"]
         let team_2_ids = responseJSON["team_2"]  // May be empty!
