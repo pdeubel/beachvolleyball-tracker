@@ -2,6 +2,12 @@
 {% block body %}
 <script src="https://unpkg.com/html5-qrcode@2.2.1/html5-qrcode.min.js"></script>
 
+<style>
+    .player-badge {
+        font-size: 1.15em;
+    }
+</style>
+
 <div class="container">
     <div class="row justify-content-center">
         <div class="col w-75" id="qr-reader"></div>
@@ -9,7 +15,7 @@
     <div class="row mt-4 justify-content-center">
         <div class="col-auto">
             <div class="container" id="add-data-here">
-                <span class="badge bg-primary me-2" id="current_player">{{ current_player_name }}</span>
+                <span class="badge bg-primary me-2 player-badge" id="current_player">{{ current_player_name }}</span>
             </div>
         </div>
     </div>

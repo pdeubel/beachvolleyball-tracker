@@ -26,7 +26,7 @@ function onScanSuccess(decodedText, decodedResult) {
         // If pos is -1 then the scanned player is a new player, so add it to the list
         if (pos < 0) {
             let player_span = document.createElement('span');
-            player_span.classList.add('badge', 'bg-primary', 'me-2');
+            player_span.classList.add('badge', 'bg-primary', 'me-2', 'player-badge');
             let player_name_text = document.createTextNode(player_name);
             player_span.appendChild(player_name_text);
             add_data_div.appendChild(player_span);
@@ -65,8 +65,8 @@ function selectTeamsCallback() {
         add_data_div.innerHTML = "";
 
         function changeClassOnClick() {
-            let player_id = this.getAttribute("player_id")
-            let current_team = player_team_map.get(player_id)
+            let player_id = parseInt(this.getAttribute("player_id"));
+            let current_team = player_team_map.get(player_id);
 
             if (current_team === 0) {
                 this.classList.replace("bg-success", "bg-danger");
@@ -87,7 +87,7 @@ function selectTeamsCallback() {
             }
 
             let player_span = document.createElement('span');
-            player_span.classList.add('badge', badgeType, 'me-2');
+            player_span.classList.add('badge', badgeType, 'me-2', 'player-badge');
             player_span.setAttribute("player_id", player_id);
             let player_name_text = document.createTextNode(player_name_map.get(player_id));
             player_span.appendChild(player_name_text);
