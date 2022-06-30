@@ -1,3 +1,4 @@
+from flask import request
 from flask_mailman import Mail, EmailMessage
 
 mail = Mail()
@@ -22,7 +23,7 @@ def get_mail_content(pin_code, pin_confirmation_url_part):
             <p>Hier ist dein PIN Code: <b>{pin_code}</b></p>
         </div>
         <div class="center-content">            
-            <p>Gebe ihn ein unter: <a href=http://localhost:5000/{pin_confirmation_url_part}>PIN Code Link</a></p>
+            <p>Gebe ihn ein unter: <a href={request.base_url}{pin_confirmation_url_part}>PIN Code Link</a></p>
         </div>
       </body>
     </html>
