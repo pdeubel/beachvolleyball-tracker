@@ -20,17 +20,20 @@ if (typeof (Number.prototype.toRad) === "undefined") {
 
 let location_in_radius = true;
 
-window.navigator.geolocation.getCurrentPosition(pos => {
-    let dist = distance(pos.coords.latitude, pos.coords.longitude, beach_location_latitude, beach_location_longitude);
-    location_in_radius = dist <= allowed_distance_in_meter;
+// TODO: Add error handling if not available
+if (window.navigator.geolocation) {
+    window.navigator.geolocation.getCurrentPosition(pos => {
+        let dist = distance(pos.coords.latitude, pos.coords.longitude, beach_location_latitude, beach_location_longitude);
+        location_in_radius = dist <= allowed_distance_in_meter;
 
-    let data = new FormData();
-    data.set("location_in_radius", location_in_radius);
+        let data = new FormData();
+        data.set("location_in_radius", location_in_radius);
 
-    fetch("/game", {
-        "method": "POST",
-        "body": data
-    }).then(res => {
-        window.location = res.url;
+        fetch("/game", {
+            "method": "POST",
+            "body": data
+        }).then(res => {
+            window.location = res.url;
+        });
     });
-});
+}

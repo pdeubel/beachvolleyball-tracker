@@ -2,7 +2,7 @@
 {% block body %}
 
 {% if form %}
-    <form method="POST" action="/player">
+<form method="POST" action="/player">
     {{ form.csrf_token }}
     <div class="container">
 
@@ -25,29 +25,31 @@
             </div>
         </div>
     </div>
-    </form>
+</form>
 {% else %}
-    <div class="container">
-        <div class="row mt-4 justify-content-center">
-            <div class="col-auto">
-                <h1>Spieler: <i>{{ player_name }}</i></h1>
-            </div>
+<div class="container">
+    <div class="row mt-4 justify-content-center">
+        <div class="col-auto">
+            <h1>Spieler: <i>{{ player_name }}</i></h1>
         </div>
+    </div>
 
-        <div class="row mt-4 justify-content-center">
-            <div class="col-auto">
-                <img src="data:image/jpeg;base64,{{ player_qr_code_b64 }}"/>
-            </div>
-        </div>
-
-        <div class="row mt-4 justify-content-center">
-            <div class="col-auto">
-                <form method="POST" action="/game">
-                    <button type=submit class="btn btn-primary">Spiel starten</button>
-                </form>
+    <div class="row mt-4 justify-content-center">
+        <div class="col-8">
+            <div class="text-center">
+                <img class="img-fluid" src="data:image/jpeg;base64,{{ player_qr_code_b64 }}"/>
             </div>
         </div>
     </div>
+
+    <div class="row mt-4 justify-content-center">
+        <div class="col-auto">
+            <form method="POST" action="/game">
+                <button type=submit class="btn btn-primary">Spiel starten</button>
+            </form>
+        </div>
+    </div>
+</div>
 {% endif %}
 
 {% endblock %}

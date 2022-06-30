@@ -8,21 +8,23 @@
     }
 </style>
 
-<div class="container">
-    <div class="row justify-content-center" id="qr-reader-row">
-        <div class="col w-75" id="qr-reader"></div>
-    </div>
+<div class="container-fluid" id="qr-reader-container">
     <div class="row mt-4 justify-content-center">
+        <div class="col-8">
+            <div id="qr-reader"></div>
+        </div>
+    </div>
+</div>
 
+<div class="container">
+    <div class="row mt-4 justify-content-center">
         <div class="col-auto">
             <h5><span id="player-information-label">Gescannte Spieler:</span></h5>
         </div>
     </div>
-    <div class="row mt-4 justify-content-center">
+    <div class="row mt-4 justify-content-center" id="add-data-here">
         <div class="col-auto">
-            <div class="container" id="add-data-here">
-                <span class="badge bg-primary me-2 player-badge" id="current_player">{{ current_player_name }}</span>
-            </div>
+            <span class="badge bg-primary player-badge mb-1" id="current_player">{{ current_player_name }}</span>
         </div>
     </div>
     <div class="row mt-4 justify-content-center">

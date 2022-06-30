@@ -25,11 +25,14 @@ function onScanSuccess(decodedText, decodedResult) {
 
         // If pos is -1 then the scanned player is a new player, so add it to the list
         if (pos < 0) {
+            let player_div = document.createElement('div');
+            player_div.classList.add('col-auto');
             let player_span = document.createElement('span');
-            player_span.classList.add('badge', 'bg-primary', 'me-2', 'player-badge');
+            player_span.classList.add('badge', 'bg-primary', 'player-badge', "mb-1");
             let player_name_text = document.createTextNode(player_name);
             player_span.appendChild(player_name_text);
-            add_data_div.appendChild(player_span);
+            player_div.appendChild(player_span);
+            add_data_div.appendChild(player_div);
 
             scanned_players.push(player_id);
             player_name_map.set(player_id, player_name);
@@ -58,8 +61,8 @@ function selectTeamsCallback() {
         btn.remove();
 
         // Remove QR code scanner as it is no longer needed
-        let qr_reader_row = document.getElementById("qr-reader-row");
-        qr_reader_row.remove();
+        let qr_reader_container = document.getElementById("qr-reader-container");
+        qr_reader_container.remove();
 
         // Inform player how to change teams
         let player_info_label = document.getElementById("player-information-label");
@@ -126,7 +129,7 @@ function selectTeamsCallback() {
 }
 
 
-function confirmTest () {
+function confirmTeamSelection() {
     fetch("/game/create-game", {
         "method": "POST",
         "headers": {'Content-Type': 'application/json'},
@@ -136,13 +139,35 @@ function confirmTest () {
     });
 }
 
-// Insert QR Code Reader
-let html5QrcodeScanner = new Html5QrcodeScanner("qr-reader", { fps: 10, qrbox: {width: 250, height: 250} });
-html5QrcodeScanner.render(onScanSuccess);
+
+/* Credits: https://scanapp.org/blog/2022/01/09/setting-dynamic-qr-box-size-in-html5-qrcode.html*/
+let qrboxFunction = function (viewfinderWidth, viewfinderHeight) {
+    let minEdgePercentage = 0.7; // 70%
+    let minEdgeSize = Math.min(viewfinderWidth, viewfinderHeight);
+    let qrboxSize = Math.floor(minEdgeSize * minEdgePercentage);
+    return {
+        width: qrboxSize,
+        height: qrboxSize
+    };
+}
+
+
+let config = {
+    fps: 25,
+    // qrbox: {width: 25, height: 25},
+    qrbox: qrboxFunction,
+    rememberLastUsedCamera: true,
+    aspectRatio: 1.0,
+    // Only support camera scan type and not searching for a file
+    supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA]
+};
+
+let html5QrcodeScanner2 = new Html5Qrcode("qr-reader"); //, config, /* verbose= */ false);
+html5QrcodeScanner2.start({facingMode: "environment"}, config, onScanSuccess);
 
 // Register the callback for the select teams button
 let select_teams_button = document.getElementById("btn-select-teams");
 select_teams_button.addEventListener("click", selectTeamsCallback);
 
 let confirm_teams_button = document.getElementById("btn-confirm-teams");
-confirm_teams_button.addEventListener("click", confirmTest);
+confirm_teams_button.addEventListener("click", confirmTeamSelection);

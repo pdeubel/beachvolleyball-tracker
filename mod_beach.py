@@ -76,19 +76,12 @@ def main():
 
     app = create_app()
 
-    """
-    db = SQLAlchemy(app)
-    migrate = Migrate(app, db)
-    
-    mail = Mail()
-    mail.init_app(app)
-    """
-
-
-    # db = SQLAlchemy(app)
-    # migrate = Migrate(app, db)
-
-    app.run(debug=True)
+    # TODO: add cli parameter for host and ssl_context and maybe disable geolocation check when debugging
+    app.run(
+        debug=True,
+        # host="192.168.178.29",
+        # ssl_context=("cert.pem", "key.pem")
+    )
 
 
 if __name__ == "__main__":
