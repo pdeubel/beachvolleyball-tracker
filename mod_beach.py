@@ -86,11 +86,16 @@ def main(debug, host, cert, key):
     if (cert is None) ^ (key is None):
         raise RuntimeError("If you provide either --cert or --key, please also provide the other argument!")
 
+    if cert is not None:
+        ssl_context = (cert, key)
+    else:
+        ssl_context = None
+
     # TODO: add cli param to maybe disable geolocation check when debugging
     app.run(
         debug=debug,
         host=host,
-        ssl_context=(cert, key)
+        ssl_context=ssl_context
     )
 
 
