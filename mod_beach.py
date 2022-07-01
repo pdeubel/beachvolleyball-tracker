@@ -25,7 +25,14 @@ def create_app():
 
     # Postgres on Heroku sets DATABASE_URL to the correct address, alternatively use a local test setup
     default_database_path = "postgresql://postgres:12345678@localhost:5432/local_db"
-    app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL", default_database_path)
+
+    database_uri = os.getenv("DATABASE_URL")
+
+    if database_uri is not None:
+        app.config["SQLALCHEMY_DATABASE_URI"] = database_uri.replace("://", "ql://", 1)
+    else:
+        app.config["SQLALCHEMY_DATABASE_URI"] = default_database_path
+
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
     # Setup of the mail server settings
