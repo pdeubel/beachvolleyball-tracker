@@ -1,5 +1,6 @@
 import os
 
+import click
 from flask import Flask
 
 from routes.game import game_page
@@ -72,15 +73,24 @@ def create_app():
     return app
 
 
-def main():
+@click.command()
+@click.option("-d", "--debug", is_flag=True, default=False)
+@click.option("-h", "--host", type=str, default=None)
+@click.option("--cert", type=str, default=None)
+@click.option("--key", type=str, default=None)
+def main(debug, host, cert, key):
 
     app = create_app()
 
-    # TODO: add cli parameter for host and ssl_context and maybe disable geolocation check when debugging
+    # XOR: assert that cert and key are either both None or both set
+    if (cert is None) ^ (key is None):
+        raise RuntimeError("If you provide either --cert or --key, please also provide the other argument!")
+
+    # TODO: add cli param to maybe disable geolocation check when debugging
     app.run(
-        debug=True,
-        # host="192.168.178.29",
-        # ssl_context=("cert.pem", "key.pem")
+        debug=debug,
+        host=host,
+        ssl_context=(cert, key)
     )
 
 
