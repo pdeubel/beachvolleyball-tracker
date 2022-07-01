@@ -116,29 +116,12 @@ function selectTeamsCallback() {
             createTeamSpanForPlayer(1, player_id);
         });
 
-
-        function setTeamNamesInModal() {
-            let first_team_list_div = document.getElementById("confirm-second-team-list-id");
-            let team_1 = [];
-            player_team_map.forEach((player_id, team_id) => {
-                if (team_id === 0) {
-                    team_1.push(player_name_map.get(player_id));
-                }
-            });
-
-            let team_1_text_node = document.createTextNode(team_1.join(", "));
-            first_team_list_div.appendChild(team_1_text_node);
-            console.log("Set inner text");
-        }
-
         const btn_div = document.getElementById("button-div");
         let start_game_btn = document.createElement("button")
         start_game_btn.setAttribute("type", "button");
         start_game_btn.classList.add("btn", "btn-primary");
         start_game_btn.setAttribute("data-bs-toggle", "modal");
         start_game_btn.setAttribute("data-bs-target", "#confirmTeamModal");
-
-        start_game_btn.addEventListener("click", setTeamNamesInModal);
 
         let start_game_btn_text = document.createTextNode("Spiel starten");
         start_game_btn.appendChild(start_game_btn_text);
