@@ -16,6 +16,8 @@ login_page = Blueprint("login", __name__)
 valid_pin_code_timedelta = timedelta(minutes=15)
 
 login_manager = LoginManager()
+login_manager.login_view = "login.login"
+login_manager.login_message = "Bitte mit deiner E-Mail einloggen!"
 
 
 class LoginForm(FlaskForm):
