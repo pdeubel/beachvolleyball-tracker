@@ -7,7 +7,7 @@ from datetime import datetime
 from math import ceil
 
 import sqlalchemy.exc
-from flask import Blueprint, render_template, request, jsonify, url_for, redirect, session
+from flask import Blueprint, render_template, request, jsonify, url_for, redirect, session, current_app
 from flask_login import login_required, current_user
 
 from backend.database_schema import Player, Game, db, GamesAndPlayers
@@ -52,25 +52,30 @@ def game_site():
         try:
             location_in_radius = request.form["location_in_radius"]
         except KeyError:
+            # Only check for geolocation when not debugging
+            if not current_app.config["DEBUG"]:
+                return render_template(
+                    "check_geolocation.html",
+                    beach_location_latitude=beach_location_latitude,
+                    beach_location_longitude=beach_location_longitude,
+                    allowed_distance_in_meter=allowed_distance_in_meter
+                )
+
+            # Since we are debugging simply say we are in location. Facilitates different device debugging
+            location_in_radius = "true"
+
+        session["location_in_radius_timestamp"] = time.time()
+
+        if location_in_radius == "true":
+            session["location_in_radius"] = True
             return render_template(
-                "check_geolocation.html",
-                beach_location_latitude=beach_location_latitude,
-                beach_location_longitude=beach_location_longitude,
-                allowed_distance_in_meter=allowed_distance_in_meter
+                "game_site.html",
+                current_player_id=current_user.player_id,
+                current_player_name=current_user.player_name
             )
         else:
-            session["location_in_radius_timestamp"] = time.time()
-
-            if location_in_radius == "true":
-                session["location_in_radius"] = True
-                return render_template(
-                    "game_site.html",
-                    current_player_id=current_user.player_id,
-                    current_player_name=current_user.player_name
-                )
-            else:
-                session["location_in_radius"] = False
-                return render_template("error_geolocation.html")
+            session["location_in_radius"] = False
+            return render_template("error_geolocation.html")
 
 
 @game_page.route("/game/<game_id>", methods=["GET"])
