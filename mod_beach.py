@@ -33,7 +33,7 @@ def create_app():
     mail_username = os.getenv("MAIL_USERNAME")
     mail_password = os.getenv("MAIL_PASSWORD")
 
-    if mail_username is None or mail_password is None:
+    if app.config["DEBUG"] and (mail_username is None or mail_password is None):
         raise RuntimeError("'MAIL_USERNAME' or 'MAIL_PASSWORD' is not set which is required so that the PIN code "
                            "emails can be sent.")
 
