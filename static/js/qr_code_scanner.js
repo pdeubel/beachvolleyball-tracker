@@ -28,7 +28,7 @@ function onScanSuccess(decodedText, decodedResult) {
             let player_div = document.createElement('div');
             player_div.classList.add('col-auto');
             let player_span = document.createElement('span');
-            player_span.classList.add('badge', 'bg-primary', 'player-badge', "mb-1");
+            player_span.classList.add('badge', 'bg-primary', 'player-badge', 'mb-1');
             let player_name_text = document.createTextNode(player_name);
             player_span.appendChild(player_name_text);
             player_div.appendChild(player_span);
@@ -96,13 +96,16 @@ function selectTeamsCallback() {
                 badgeType = "bg-danger";
             }
 
+            let player_div = document.createElement('div');
+            player_div.classList.add('col-auto');
             let player_span = document.createElement('span');
-            player_span.classList.add('badge', badgeType, 'me-2', 'player-badge');
+            player_span.classList.add('badge', badgeType, 'player-badge', 'mb-1');
             player_span.setAttribute("player_id", player_id);
             let player_name_text = document.createTextNode(player_name_map.get(player_id));
             player_span.appendChild(player_name_text);
             player_span.addEventListener("click", changeClassOnClick);
-            add_data_div.appendChild(player_span);
+            player_div.appendChild(player_span);
+            add_data_div.appendChild(player_div);
         }
 
         team_1_ids.forEach(player_id => {
