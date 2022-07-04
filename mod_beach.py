@@ -49,9 +49,9 @@ def create_app():
     mail_username = os.getenv("MAIL_USERNAME")
     mail_password = os.getenv("MAIL_PASSWORD")
 
-    if app.config["DEBUG"] and (mail_username is None or mail_password is None):
-        raise RuntimeError("'MAIL_USERNAME' or 'MAIL_PASSWORD' is not set which is required so that the PIN code "
-                           "emails can be sent.")
+    assert (mail_username is not None and mail_password is not None), ("'MAIL_USERNAME' and/or 'MAIL_PASSWORD' are not "
+                                                                       "set which is required so that the PIN code "
+                                                                       "E-mails can be sent.")
 
     # Use the Mailgun add-on from heroku, which like Postgres works with environment variables
     app.config["MAIL_SERVER"] = os.getenv("MAIL_SERVER", "localhost")
@@ -91,28 +91,16 @@ def create_app():
 
 
 @click.command()
-@click.option("-d", "--debug", is_flag=True, default=False)
+@click.option("-d", "--debug/--no-debug", is_flag=True, default=False)
 @click.option("-h", "--host", type=str, default=None)
-@click.option("--cert", type=str, default=None)
-@click.option("--key", type=str, default=None)
-def main(debug, host, cert, key):
+def main(debug: bool, host: str):
 
     app = create_app()
 
-    # XOR: assert that cert and key are either both None or both set
-    if (cert is None) ^ (key is None):
-        raise RuntimeError("If you provide either --cert or --key, please also provide the other argument!")
-
-    if cert is not None:
-        ssl_context = (cert, key)
-    else:
-        ssl_context = None
-
-    # TODO: add cli param to maybe disable geolocation check when debugging
     app.run(
         debug=debug,
         host=host,
-        ssl_context=ssl_context
+        ssl_context="adhoc"
     )
 
 
