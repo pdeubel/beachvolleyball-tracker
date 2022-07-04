@@ -39,6 +39,11 @@ def load_player(player_id):
     return Player.query.filter_by(player_id=player_id).first()
 
 
+@login_page.route("/test-geo", methods=["GET"])
+def test_geo():
+    return render_template("check_email.html")
+
+
 @login_page.route("/", methods=["GET", "POST"])
 def login():
     if current_user.is_authenticated:

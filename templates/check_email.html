@@ -5,9 +5,23 @@
 
     <div class="row justify-content-center">
         <div class="col-auto">
-            <h1>Klicke auf den Link in deinen E-Mails zum Einloggen!</h1>
+            <h1>Deine Geolocation:</h1><br/>
+            Longitude: <span id="longitude"></span><br/>
+            Latitude: <span id="latitude"></span><br/><br/>
         </div>
     </div>
 </div>
+
+<script>
+    window.navigator.geolocation.getCurrentPosition(pos => {
+        let longitude_div = document.getElementById("longitude");
+        let latitude_div = document.getElementById("latitude");
+
+        longitude_div.innerText = pos.coords.longitude;
+        latitude_div.innerText = pos.coords.latitude;
+    });
+
+
+</script>
 
 {% endblock %}
