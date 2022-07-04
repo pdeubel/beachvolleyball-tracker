@@ -45,10 +45,11 @@ def create_app():
                            "emails can be sent.")
 
     # Use the Mailgun add-on from heroku, which like Postgres works with environment variables
-    app.config["MAIL_SERVER"] = os.getenv("MAILGUN_SMTP_SERVER", "localhost")
-    app.config["MAIL_PORT"] = os.getenv("MAILGUN_SMTP_PORT", "25")
-    app.config["MAIL_USERNAME"] = os.getenv("MAILGUN_SMTP_LOGIN", mail_username)
-    app.config["MAIL_PASSWORD"] = os.getenv("MAILGUN_SMTP_PASSWORD", mail_password)
+    app.config["MAIL_SERVER"] = os.getenv("MAIL_SERVER", "localhost")
+    app.config["MAIL_PORT"] = os.getenv("MAIL_PORT", "25")
+    app.config["MAIL_USERNAME"] = os.getenv("MAIL_USERNAME", mail_username)
+    app.config["MAIL_PASSWORD"] = os.getenv("MAIL_PASSWORD", mail_password)
+    app.config["MAIL_USE_TLS"] = True
 
     # Database app initialization
     db.init_app(app)

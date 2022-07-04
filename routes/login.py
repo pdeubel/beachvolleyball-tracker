@@ -2,6 +2,7 @@ import time
 from datetime import datetime, timedelta
 from random import randint, choice
 from string import ascii_uppercase, ascii_lowercase, digits
+from urllib.parse import urljoin
 
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_user, LoginManager, current_user
@@ -80,7 +81,7 @@ def login():
         # TODO fill in this function
         send_pin_code(email, pin_code, pin_confirmation_url_part)
 
-        return render_template("check_email.html")
+        return redirect(urljoin(request.base_url, pin_confirmation_url_part))
 
     return render_template("login.html", form=form)
 

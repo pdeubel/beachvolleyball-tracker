@@ -7,5 +7,10 @@ __pycache__/
 # PyCharm
 .idea
 
+# Local Debugging
 testing-flask
 mailserver/
+cert.pem
+key.pem
+key_unencrypted.pem
+debug-env-variables.sh

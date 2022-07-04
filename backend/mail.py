@@ -1,3 +1,5 @@
+from urllib.parse import urljoin
+
 from flask import request
 from flask_mailman import Mail, EmailMessage
 
@@ -19,11 +21,13 @@ def get_mail_content(pin_code, pin_confirmation_url_part):
         </style>
       </head>
       <body>
-        <div class="center-content">
-            <p>Hier ist dein PIN Code: <b>{pin_code}</b></p>
-        </div>
         <div class="center-content">            
-            <p>Gebe ihn ein unter: <a href={request.base_url}{pin_confirmation_url_part}>PIN Code Link</a></p>
+            <p>Gib den PIN Code auf der Website ein, oder unter folgendem Link:
+            <a href={urljoin(request.base_url, pin_confirmation_url_part)}>PIN Code Link</a>
+            </p>
+        </div>
+        <div class="center-content">
+            <p>PIN Code: <strong>{pin_code}</strong></p>
         </div>
       </body>
     </html>
