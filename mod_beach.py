@@ -7,12 +7,18 @@ from routes.game import game_page
 
 
 def create_app():
+    from flask_talisman import Talisman
+
     from backend.database_schema import db, migrate
     from backend.mail import mail
     from routes.login import login_page, login_manager
     from routes.player import player_page
 
     app = Flask(__name__)
+
+    # Set up Talisman to force HTTPS; set content_security_policy to None as it otherwise prevents loading of any
+    # resources not in the same domain as the web app (e.g. JS libraries etc.)
+    Talisman(app, force_https=True, content_security_policy=None)
 
     secret_key = os.getenv("SECRET_KEY")
 
