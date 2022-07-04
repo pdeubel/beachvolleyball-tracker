@@ -43,6 +43,9 @@ def create_app():
 
     # Setup of the mail server settings
 
+    mail_sender_address = os.getenv("MAIL_SENDER_ADDRESS")
+    assert mail_sender_address is not None, "Please specify the E-Mail sender address with 'MAIL_SENDER_ADDRESS'"
+
     mail_username = os.getenv("MAIL_USERNAME")
     mail_password = os.getenv("MAIL_PASSWORD")
 

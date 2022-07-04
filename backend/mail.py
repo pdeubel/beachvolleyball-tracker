@@ -1,9 +1,11 @@
+import os
 from urllib.parse import urljoin
 
 from flask import request
 from flask_mailman import Mail, EmailMessage
 
 mail = Mail()
+FROM_EMAIL = os.getenv("MAIL_SENDER_ADDRESS")
 
 
 def get_mail_content(pin_code, pin_confirmation_url_part):
@@ -38,7 +40,7 @@ def send_pin_code(email: str, pin_code: str, pin_confirmation_url_part: str):
     msg = EmailMessage(
         subject="Max'au Beach Master of Desaster - PIN Code",
         body=get_mail_content(pin_code, pin_confirmation_url_part),
-        from_email="admin@testdomain",
+        from_email=FROM_EMAIL,
         to=[email],
     )
     msg.content_subtype = "html"
