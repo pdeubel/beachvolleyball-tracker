@@ -9,6 +9,7 @@
             Longitude: <span id="longitude"></span><br/>
             Latitude: <span id="latitude"></span><br/>
             Accuracy: <span id="accuracy"></span><br/><br/>
+            <h1>Error: <span id="error"></span></h1>
         </div>
     </div>
 </div>
@@ -22,6 +23,16 @@
         longitude_div.innerText = pos.coords.longitude;
         latitude_div.innerText = pos.coords.latitude;
         accuracy_div.innerText = pos.coords.accuracy;
+    }, error => {
+        let error_div = document.getElementById("error");
+
+        if (error.code === error.PERMISSION_DENIED) {
+            error_div.innerText = "Permission denied";
+        } else if (error.code === error.POSITION_UNAVAILABLE) {
+            error_div.innerText = "Position unavailable";
+        } else {
+            error_div.innerText = "Other error";
+        }
     });
 
 
