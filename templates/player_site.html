@@ -42,13 +42,23 @@
         </div>
     </div>
 
-    <div class="row mt-4 justify-content-center">
-        <div class="col-auto">
-            <form method="POST" action="/game">
-                <button type=submit class="btn btn-primary">Spiel starten</button>
-            </form>
+    {% if exists_open_game %}
+        <div class="row mt-4 justify-content-center">
+            <div class="col-auto">
+                <a href="{{ url_for('game.show_game_with_id', game_id=open_game_id) }}">
+                    <button type="button" class="btn btn-success">Aktuelles Spiel öffnen</button>
+                </a>
+            </div>
         </div>
-    </div>
+    {% else %}
+        <div class="row mt-4 justify-content-center">
+            <div class="col-auto">
+                <form method="POST" action="/game">
+                    <button type=submit class="btn btn-primary">Spiel starten</button>
+                </form>
+            </div>
+        </div>
+    {% endif %}
 </div>
 {% endif %}
 
