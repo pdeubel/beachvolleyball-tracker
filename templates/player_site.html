@@ -28,9 +28,21 @@
 </form>
 {% else %}
 <div class="container">
-    <div class="row mt-4 justify-content-center">
+    <div class="row mt-4 justify-content-center align-items-center">
         <div class="col-auto">
-            <h1>Spieler: <i>{{ player_name }}</i></h1>
+            <div class="fs-1">
+                Spieler: <i>{{ player_name }}</i>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4 justify-content-center align-items-center">
+        <div class="col-auto">
+            <form method="POST" action="{{ url_for('player.player_site') }}">
+                <button type="submit" class="btn btn-secondary">
+                    <i class="bi bi-pencil"></i> Spielername ändern
+                </button>
+            </form>
         </div>
     </div>
 
@@ -43,21 +55,21 @@
     </div>
 
     {% if exists_open_game %}
-        <div class="row mt-4 justify-content-center">
-            <div class="col-auto">
-                <a href="{{ url_for('game.show_game_with_id', game_id=open_game_id) }}">
-                    <button type="button" class="btn btn-success">Aktuelles Spiel öffnen</button>
-                </a>
-            </div>
+    <div class="row mt-4 justify-content-center">
+        <div class="col-auto">
+            <a href="{{ url_for('game.show_game_with_id', game_id=open_game_id) }}">
+                <button type="button" class="btn btn-success">Aktuelles Spiel öffnen</button>
+            </a>
         </div>
+    </div>
     {% else %}
-        <div class="row mt-4 justify-content-center">
-            <div class="col-auto">
-                <form method="POST" action="/game">
-                    <button type=submit class="btn btn-primary">Spiel starten</button>
-                </form>
-            </div>
+    <div class="row mt-4 justify-content-center">
+        <div class="col-auto">
+            <form method="POST" action="/game">
+                <button type="submit" class="btn btn-primary">Spiel starten</button>
+            </form>
         </div>
+    </div>
     {% endif %}
 </div>
 {% endif %}
