@@ -17,6 +17,7 @@ game_page = Blueprint("game", __name__)
 beach_location_latitude = os.getenv("BEACH_LOC_LATITUDE")
 beach_location_longitude = os.getenv("BEACH_LOC_LONGITUDE")
 allowed_distance_in_meter = os.getenv("ALLOWED_DISTANCE_METER")
+minimum_players_per_game = os.getenv("MINIMUM_PLAYERS_PER_GAME", 2)
 
 
 @game_page.route("/game", methods=["GET", "POST"])
@@ -44,7 +45,8 @@ def game_site():
                 return render_template(
                     "game_site.html",
                     current_player_id=current_user.player_id,
-                    current_player_name=current_user.player_name
+                    current_player_name=current_user.player_name,
+                    minimum_players_per_game=minimum_players_per_game
                 )
             else:
                 return render_template("error_geolocation.html")
@@ -71,7 +73,8 @@ def game_site():
             return render_template(
                 "game_site.html",
                 current_player_id=current_user.player_id,
-                current_player_name=current_user.player_name
+                current_player_name=current_user.player_name,
+                minimum_players_per_game=minimum_players_per_game
             )
         else:
             session["location_in_radius"] = False
@@ -141,6 +144,10 @@ def select_teams():
         except json.decoder.JSONDecodeError or KeyError:
             return "Invalid data", 400
 
+        if len(players) < minimum_players_per_game:
+            # 403 Forbidden -> This should only occur if someone modified the DOM to enable the button
+            return "Not enough players", 403
+
         index_to_separate_teams = ceil(len(players) / 2)
 
         return jsonify({"team_1": players[:index_to_separate_teams], "team_2": players[index_to_separate_teams:]})
@@ -188,3 +195,9 @@ def register_game_winner():
         db.session.commit()
 
     return ("Success", 201)
+
+
+@game_page.route("/game/minimum-players", methods=["GET"])
+@login_required
+def return_minimum_players_per_game():
+    return jsonify({"minimum_players_per_game": minimum_players_per_game})

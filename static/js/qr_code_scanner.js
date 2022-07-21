@@ -7,6 +7,8 @@ let player_team_map = new Map();
 
 const add_data_div = document.getElementById("add-data-here");
 
+let already_enabled_select_teams_button = false;
+let select_teams_button = document.getElementById("btn-select-teams");
 
 function onScanSuccess(decodedText, decodedResult) {
     let data = new FormData();
@@ -36,9 +38,34 @@ function onScanSuccess(decodedText, decodedResult) {
 
             scanned_players.push(player_id);
             player_name_map.set(player_id, player_name);
+
+            // Only enable the teams select button when the minimum amount of players is reached. For this fetch the
+            // minimum required amount of players from the endpoint and then compare
+            if (!already_enabled_select_teams_button) {
+                console.log("Checking minimum players");
+                fetch('/game/minimum-players', {
+                    "method": "GET"
+                }).then(response => {
+                    return response.json();
+                }).then(json_response => {
+                    let minimum_players_per_game = parseInt(json_response["minimum_players_per_game"]);
+                    console.log("Minimum players per game: ", minimum_players_per_game);
+
+                    if (scanned_players.length >= minimum_players_per_game) {
+                        select_teams_button.removeAttribute("disabled");
+                        already_enabled_select_teams_button = true;
+
+                        console.log("Enabled!");
+                    }
+
+                }).catch(err => {
+                   console.log("Error: ", err)
+                });
+            }
+
         }
     }).catch(err => {
-        console.log("Error:", err)
+        console.log("Error: ", err)
     });
 }
 
@@ -169,7 +196,6 @@ let html5QrcodeScanner2 = new Html5Qrcode("qr-reader"); //, config, /* verbose= 
 html5QrcodeScanner2.start({facingMode: "environment"}, config, onScanSuccess);
 
 // Register the callback for the select teams button
-let select_teams_button = document.getElementById("btn-select-teams");
 select_teams_button.addEventListener("click", selectTeamsCallback);
 
 let confirm_teams_button = document.getElementById("btn-confirm-teams");
