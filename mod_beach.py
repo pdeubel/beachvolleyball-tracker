@@ -70,18 +70,6 @@ def create_app():
     # Initialize Flask-Mailman to send mails
     mail.init_app(app)
 
-    beach_location_latitude = os.getenv("BEACH_LOC_LATITUDE")
-    beach_location_longitude = os.getenv("BEACH_LOC_LONGITUDE")
-    allowed_distance_in_meter = os.getenv("ALLOWED_DISTANCE_METER")
-
-    assert beach_location_latitude is not None and beach_location_longitude is not None, ("Did not set the latitude "
-                                                                                          "and longitude positions for "
-                                                                                          "the location of the "
-                                                                                          "beachvolleyball court!")
-
-    assert allowed_distance_in_meter is not None, ("Please set the allowed distance from the beachvolleyball court in "
-                                                   "meters.")
-
     # Register Blueprints
     app.register_blueprint(login_page)
     app.register_blueprint(player_page)

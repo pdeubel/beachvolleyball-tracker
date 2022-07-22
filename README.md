@@ -44,13 +44,11 @@ export MAIL_PASSWORD=
 # E-mail address in the form 'user@domain.com'. I think it does not have to match to the chosen user, but this is what
 # the user will see as the sender
 export MAIL_SENDER_ADDRESS=  
-                             
-# Geocoordinates (latitude and longitude) as floats of the location where the court/location is where the users play
-# in real life. ALLOWED_DISTANCE_METER (Integer) sets the radius in meters from that point, in which the users are
-# allowed to start a game
-export BEACH_LOC_LATITUDE=
-export BEACH_LOC_LONGITUDE=
-export ALLOWED_DISTANCE_METER=
+
+# If a game lasts longer (in hours) than this value (i.e. no result has been entered), then it is deleted        
+export MAX_GAME_AGE_HOURS=3.5
+# Specify the minimum amount of players needed to start a game. The value must be greater than 0
+export MINIMUM_PLAYERS_PER_GAME=2
 ```
 
 ## Starting the server
