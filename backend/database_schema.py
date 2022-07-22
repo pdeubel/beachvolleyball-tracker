@@ -42,6 +42,8 @@ class Game(db.Model):
     games_and_players = db.relationship("GamesAndPlayers", cascade="all, delete")
 
     def __repr__(self):
+        if self.team_1_won is None:
+            return f"<Game #{repr(self.game_id)} -- No winner>"
         return f"<Game #{repr(self.game_id)} -- Team {2 if self.team_1_won else 1} won>"
 
     def get_id(self):

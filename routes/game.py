@@ -28,9 +28,7 @@ def game_site():
     )
 
 
-@game_page.route("/game/<game_id>", methods=["GET"])
-@login_required
-def show_game_with_id(game_id: int):
+def query_game_by_id_and_check_permission(game_id):
     game = Game.query.filter_by(game_id=game_id).first()
 
     # Only the creator has access to the game page and only if no result has been added
@@ -40,6 +38,15 @@ def show_game_with_id(game_id: int):
             or game.team_1_won is not None):
         return redirect(url_for("player.player_site"))
 
+    # Valid permissions and no result has been entered -> return the Game
+    return game
+
+
+@game_page.route("/game/<game_id>", methods=["GET"])
+@login_required
+def show_game_with_id(game_id: int):
+    query_game_by_id_and_check_permission(game_id)
+
     players = Player.query.join(GamesAndPlayers).filter_by(game_id=game_id)
     # Team set to False (or as integer '0') resembles Team 1
     first_team_player_names = [p.player_name for p in players.filter_by(team=False).all()]
@@ -47,6 +54,17 @@ def show_game_with_id(game_id: int):
 
     return render_template("select_winner_team.html", game_id=game_id, first_team_player_names=first_team_player_names,
                            second_team_player_names=second_team_player_names)
+
+
+@game_page.route("/game/delete/<game_id>", methods=["GET"])
+@login_required
+def delete_game(game_id: int):
+    game = query_game_by_id_and_check_permission(game_id)
+
+    db.session.delete(game)
+    db.session.commit()
+
+    return redirect(url_for("player.player_site"))
 
 
 @game_page.route("/game/player-lookup", methods=["POST"])

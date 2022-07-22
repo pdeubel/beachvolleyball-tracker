@@ -35,6 +35,26 @@
 </div>
 
 
+<!--Modal to confirm the deletion of the game-->
+<div class="modal fade" id="deleteGameModal" tabindex="-1" aria-labelledby="deleteGameModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteGameModalLabel">Spiel wirklich löschen?</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Schließen"></button>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Abbrechen</button>
+                <a href="{{ url_for('game.delete_game', game_id=game_id) }}">
+                    <button type=button class="btn btn-danger" id="delete-game-btn">Löschen</button>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <div class="container" id="select-winner-content-div">
     <div class="row mt-4 justify-content-center">
         <div class="col-auto">
@@ -64,6 +84,14 @@
     <div class="row mt-4 justify-content-center collapse" id="select-winner-team-alert-id">
         <div class="col-auto alert alert-warning">
             Bitte ein Gewinnerteam antippen
+        </div>
+    </div>
+
+    <div class="row mt-4 justify-content-center">
+        <div class="col-auto">
+            <button type=button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteGameModal"
+                    id="delete-game-open-modal-btn">Dieses Spiel löschen
+            </button>
         </div>
     </div>
 </div>
