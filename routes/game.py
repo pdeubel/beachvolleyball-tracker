@@ -150,7 +150,7 @@ def create_game():
 @login_required
 def register_game_winner():
     game_id = int(request.form["game_id"])
-    winner_team = request.form["winner_team"]
+    winner_team = int(request.form["winner_team"])
 
     game = Game.query.filter_by(game_id=game_id).first()
 
