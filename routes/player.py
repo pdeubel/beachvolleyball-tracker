@@ -37,7 +37,7 @@ def player_site():
     player_id = current_user.player_id
     player_name = current_user.player_name
 
-    if request.method == "POST" or player_name is None or player_name == "":
+    if request.method == "POST" and (player_name is None or player_name == ""):
         form = PlayerNameForm(player_name=player_name)
 
         if form.validate_on_submit():
