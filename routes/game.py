@@ -28,7 +28,9 @@ def game_site():
     )
 
 
-def query_game_by_id_and_check_permission(game_id):
+@game_page.route("/game/<game_id>", methods=["GET"])
+@login_required
+def show_game_with_id(game_id: int):
     game = Game.query.filter_by(game_id=game_id).first()
 
     # Only the creator has access to the game page and only if no result has been added
@@ -37,15 +39,6 @@ def query_game_by_id_and_check_permission(game_id):
             or game.win_result_submitted_timestamp is not None
             or game.team_1_won is not None):
         return redirect(url_for("player.player_site"))
-
-    # Valid permissions and no result has been entered -> return the Game
-    return game
-
-
-@game_page.route("/game/<game_id>", methods=["GET"])
-@login_required
-def show_game_with_id(game_id: int):
-    query_game_by_id_and_check_permission(game_id)
 
     players = Player.query.join(GamesAndPlayers).filter_by(game_id=game_id)
     # Team set to False (or as integer '0') resembles Team 1
@@ -59,7 +52,12 @@ def show_game_with_id(game_id: int):
 @game_page.route("/game/delete/<game_id>", methods=["GET"])
 @login_required
 def delete_game(game_id: int):
-    game = query_game_by_id_and_check_permission(game_id)
+    game = Game.query.filter_by(game_id=game_id).first()
+
+    # Only the creator has access to the game page and only if no result has been added
+    if (game is None
+            or game.game_created_by != current_user.player_id):
+        return redirect(url_for("player.player_site"))
 
     db.session.delete(game)
     db.session.commit()
