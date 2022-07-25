@@ -54,23 +54,26 @@
         </div>
     </div>
 
-    {% if exists_open_game %}
     <div class="row mt-4 justify-content-center">
+        {% if exists_open_game %}
         <div class="col-auto">
             <a href="{{ url_for('game.show_game_with_id', game_id=open_game_id) }}">
                 <button type="button" class="btn btn-success">Aktuelles Spiel öffnen</button>
             </a>
         </div>
-    </div>
-    {% else %}
-    <div class="row mt-4 justify-content-center">
+        {% else %}
         <div class="col-auto">
             <a href="{{ url_for('game.game_site') }}">
                 <button type="button" class="btn btn-primary">Spiel starten</button>
             </a>
         </div>
+        {% endif %}
+        <div class="col-auto">
+            <a href="{{ url_for('standings.standings') }}">
+                <button class="btn btn-info">Tabelle</button>
+            </a>
+        </div>
     </div>
-    {% endif %}
 </div>
 {% endif %}
 

@@ -1,0 +1,39 @@
+{% extends "index.html" %}
+{% block body %}
+
+<div class="container">
+    <div class="row mt-2">
+        <div class="col-4">
+            <a href="{{ url_for('player.player_site') }}">
+                <button class="btn btn-primary">Zurück</button>
+            </a>
+        </div>
+    </div>
+    <div class="row mt-2 justify-content-center">
+
+        <div class="col-10">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Spiele</th>
+                    <th scope="col">Siege</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for i, row in standings_dataframe.iterrows() %}
+                    <tr>
+                        <th scope="row">{{ i + 1 }}</th>
+                        <th>{{ row['Name'] }}</th>
+                        <th>{{ row['Games'] }}</th>
+                        <th>{{ row['Won'] }}</th>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

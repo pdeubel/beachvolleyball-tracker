@@ -13,6 +13,7 @@ def create_app():
     from backend.mail import mail
     from routes.login import login_page, login_manager
     from routes.player import player_page
+    from routes.standings import standings_page
 
     app = Flask(__name__)
 
@@ -74,6 +75,7 @@ def create_app():
     app.register_blueprint(login_page)
     app.register_blueprint(player_page)
     app.register_blueprint(game_page)
+    app.register_blueprint(standings_page)
 
     return app
 
