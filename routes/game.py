@@ -14,7 +14,7 @@ from backend.database_schema import Player, Game, db, GamesAndPlayers
 
 game_page = Blueprint("game", __name__)
 
-minimum_players_per_game = os.getenv("MINIMUM_PLAYERS_PER_GAME", 2)
+minimum_players_per_game = int(os.getenv("MINIMUM_PLAYERS_PER_GAME", 2))
 
 
 @game_page.route("/game", methods=["GET"])
