@@ -22,6 +22,13 @@ After the season the 'Master of Desaster' (the overall winner) can be seen!
 
 - TODO: Heroku setup instructions
 
+#### HTTPS certificate
+
+Generate a certificate by running `openssl req -x509 -newkey rsa:4096 -nodes -out cert.pem -keyout key.pem -days 365`,
+and pressing enter for everything (since we use it for development only the settings are irrelevant). Now you
+only have to confirm once in the browser that you trust this self-signed certificate, when opening the application
+in the browser.
+
 ## Environment Variables
 
 The following environment variables must be defined, where the application is run:

@@ -90,7 +90,7 @@ def main(debug: bool, host: str):
     app.run(
         debug=debug,
         host=host,
-        ssl_context="adhoc"
+        ssl_context=("cert.pem", "key.pem")
     )
 
 
