@@ -36,13 +36,22 @@ def standings():
     ).all()
 
     standings_raw_data = pd.DataFrame(all_games)
-    num_games_per_player = standings_raw_data.groupby("player_id").size().reset_index(name="Games")
-    num_won_games_per_player = standings_raw_data[standings_raw_data["team"] == standings_raw_data["team_1_won"]].groupby("player_id").size().reset_index(name="Won")
 
-    standings_dataframe = pd.merge(num_games_per_player, num_won_games_per_player, on="player_id")
-    player_names = standings_raw_data[["player_id", "player_name"]].set_index("player_id").drop_duplicates()
+    # Double check: Could be that no games are returned (only if none have been played), or that a key does not match
+    # then simply return an empty DataFrame which will work in the HTML template and display an empty table
+    if not standings_raw_data.empty:
+        try:
+            num_games_per_player = standings_raw_data.groupby("player_id2").size().reset_index(name="Games")
+            num_won_games_per_player = standings_raw_data[standings_raw_data["team"] == standings_raw_data["team_1_won"]].groupby("player_id").size().reset_index(name="Won")
 
-    standings_dataframe["player_id"] = standings_dataframe["player_id"].map(player_names["player_name"])
-    standings_dataframe = standings_dataframe.rename({"player_id": "Name"}, axis=1).sort_values(by="Won", ascending=False)
+            standings_dataframe = pd.merge(num_games_per_player, num_won_games_per_player, on="player_id")
+            player_names = standings_raw_data[["player_id", "player_name"]].set_index("player_id").drop_duplicates()
+
+            standings_dataframe["player_id"] = standings_dataframe["player_id"].map(player_names["player_name"])
+            standings_dataframe = standings_dataframe.rename({"player_id": "Name"}, axis=1).sort_values(by="Won", ascending=False)
+        except KeyError:
+            standings_dataframe = pd.DataFrame()
+    else:
+        standings_dataframe = standings_raw_data
 
     return render_template("standings.html", standings_dataframe=standings_dataframe)
