@@ -59,7 +59,8 @@ def login():
 
         if player is None:
             player = Player(
-                email=email
+                email=email,
+                is_admin=False
             )
             db.session.add(player)
             db.session.commit()

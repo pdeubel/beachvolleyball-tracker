@@ -1,0 +1,37 @@
+{% extends "index.html" %}
+{% block body %}
+
+<div class="container">
+    <div class="row mt-2 justify-content-center">
+        <div class="col-auto">
+            <h3>Neuen Spieler whitelisten:</h3>
+        </div>
+    </div>
+    <form method="POST" action="/admin">
+        {{ form.csrf_token }}
+
+        <div class="row mt-2 justify-content-center">
+            <div class="col-auto">
+                {{ form.email.label }} {{ form.email(size=20) }}
+            </div>
+        </div>
+
+        <div class="row mt-2 justify-content-center">
+            <div class="col-auto">
+                <button type=submit class="btn btn-success">Hinzufügen</button>
+                {{ form.submit }}
+            </div>
+        </div>
+    </form>
+
+    <div class="row mt-4 justify-content-center">
+        <div class="col-auto">
+            <a href="{{ url_for('player.player_site') }}">
+                <button class="btn btn-primary">Zurück zur Spielerseite</button>
+            </a>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

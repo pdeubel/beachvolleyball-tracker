@@ -16,6 +16,7 @@ class Player(db.Model, UserMixin):
     pin_confirmation_url_part = db.Column(db.String(24), nullable=True)  # Variable generated route for confirmation
     pin_code_hash = db.Column(db.String(200), nullable=True)  # Use hashed 6-Digit Pin for the login
     pin_code_timestamp = db.Column(db.DateTime, nullable=True)  # Timestamp to check if PIN is still valid
+    is_admin = db.Column(db.Boolean, nullable=False, default=False)  # Sets if a user is an admin or not
 
     games = db.relationship("Game", cascade="all, delete")
     games_and_players = db.relationship("GamesAndPlayers", cascade="all, delete")

@@ -3,6 +3,7 @@ import os
 import click
 from flask import Flask
 
+from routes.admin import admin_page
 from routes.game import game_page
 
 
@@ -76,6 +77,7 @@ def create_app():
     app.register_blueprint(player_page)
     app.register_blueprint(game_page)
     app.register_blueprint(standings_page)
+    app.register_blueprint(admin_page)
 
     return app
 
