@@ -41,9 +41,11 @@ def standings():
     # then simply return an empty DataFrame which will work in the HTML template and display an empty table
     if not standings_raw_data.empty:
         try:
-            num_games_per_player = standings_raw_data.groupby("player_id2").size().reset_index(name="Games")
-            num_won_games_per_player = standings_raw_data[standings_raw_data["team"] == standings_raw_data["team_1_won"]].groupby("player_id").size().reset_index(name="Won")
+            num_games_per_player = standings_raw_data.groupby("player_id").size().reset_index(name="Games")
 
+            standings_raw_data["won_game"] = (standings_raw_data["team"] == standings_raw_data["team_1_won"]).astype("int32")
+
+            num_won_games_per_player = standings_raw_data.groupby("player_id")["won_game"].sum().reset_index(name="Won")
             standings_dataframe = pd.merge(num_games_per_player, num_won_games_per_player, on="player_id")
             player_names = standings_raw_data[["player_id", "player_name"]].set_index("player_id").drop_duplicates()
 
